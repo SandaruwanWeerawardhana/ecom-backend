@@ -1,0 +1,640 @@
+# ==============================================================
+# PRODUCTION PROFILE - CONTABO VPS
+# ==============================================================
+spring:
+  application:
+    name: beyos-clothing-backend
+
+  # ============================================================
+  # DATABASE CONFIGURATION (MySQL CONTAINER)
+  # ============================================================
+  datasource:
+    auth:
+      jdbc-url: jdbc:mysql://${DB_HOST}:3306/beyos_auth_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+        pool-name: BeyosAuthHikariPool
+        maximum-pool-size: 10
+        minimum-idle: 5
+        connection-timeout: 20000
+        idle-timeout: 300000
+        max-lifetime: 1200000
+
+    customer:
+      jdbc-url: jdbc:mysql://${DB_HOST}:3306/beyos_customers_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+        pool-name: BeyosCustomerHikariPool
+        maximum-pool-size: 10
+        minimum-idle: 5
+        connection-timeout: 20000
+        idle-timeout: 300000
+        max-lifetime: 1200000
+
+    admin:
+      jdbc-url: jdbc:mysql://${DB_HOST}:3306/beyos_admin_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+        pool-name: BeyosAdminHikariPool
+        maximum-pool-size: 10
+        minimum-idle: 5
+        connection-timeout: 20000
+        idle-timeout: 300000
+        max-lifetime: 1200000
+
+    product:
+      jdbc-url: jdbc:mysql://${DB_HOST}:3306/beyos_product_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+        pool-name: BeyosProductHikariPool
+        maximum-pool-size: 10
+        minimum-idle: 5
+        connection-timeout: 20000
+        idle-timeout: 300000
+        max-lifetime: 1200000
+
+    inventory:
+      jdbc-url: jdbc:mysql://${DB_HOST}:3306/beyos_inventory_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+        pool-name: BeyosInventoryHikariPool
+        maximum-pool-size: 10
+        minimum-idle: 5
+        connection-timeout: 20000
+        idle-timeout: 300000
+        max-lifetime: 1200000
+
+    promotion:
+      jdbc-url: jdbc:mysql://${DB_HOST}:3306/beyos_promo_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+        pool-name: BeyosPromotionHikariPool
+        maximum-pool-size: 10
+        minimum-idle: 5
+        connection-timeout: 20000
+        idle-timeout: 300000
+        max-lifetime: 1200000
+
+    cart:
+      jdbc-url: jdbc:mysql://${DB_HOST}:3306/beyos_cart_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+        pool-name: BeyosCartHikariPool
+        maximum-pool-size: 10
+        minimum-idle: 5
+        connection-timeout: 20000
+        idle-timeout: 300000
+        max-lifetime: 1200000
+
+    delivery:
+      jdbc-url: jdbc:mysql://${DB_HOST}:3306/beyos_delivery?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+        pool-name: BeyosDeliveryHikariPool
+        maximum-pool-size: 10
+        minimum-idle: 5
+        connection-timeout: 20000
+        idle-timeout: 300000
+        max-lifetime: 1200000
+
+    payment:
+      jdbc-url: jdbc:mysql://${DB_HOST}:3306/beyos_payment?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+        pool-name: BeyosPaymentHikariPool
+        maximum-pool-size: 10
+        minimum-idle: 5
+        connection-timeout: 20000
+        idle-timeout: 300000
+        max-lifetime: 1200000
+
+    order:
+      jdbc-url: jdbc:mysql://${DB_HOST}:3306/beyos_order?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+        pool-name: BeyosOrderHikariPool
+        maximum-pool-size: 10
+        minimum-idle: 5
+        connection-timeout: 20000
+        idle-timeout: 300000
+        max-lifetime: 1200000
+
+    pos:
+      jdbc-url: jdbc:mysql://${DB_HOST}:3306/beyos_pos?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+        pool-name: BeyosPosHikariPool
+        maximum-pool-size: 10
+        minimum-idle: 5
+        connection-timeout: 20000
+        idle-timeout: 300000
+        max-lifetime: 1200000
+
+    reseller:
+      jdbc-url: jdbc:mysql://${DB_HOST}:3306/beyos_reseller?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+        pool-name: BeyosResellerHikariPool
+        maximum-pool-size: 10
+        minimum-idle: 5
+        connection-timeout: 20000
+        idle-timeout: 300000
+        max-lifetime: 1200000
+
+  # ============================================================
+  # JPA/HIBERNATE CONFIGURATION
+  # ============================================================
+  jpa:
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.MySQLDialect
+        jdbc:
+          batch_size: 50
+          time_zone: UTC
+        order_inserts: true
+        order_updates: true
+        enable_lazy_load_no_trans: false
+    hibernate:
+      ddl-auto: validate
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+
+  # ============================================================
+  # FLYWAY DATABASE MIGRATION
+  # ============================================================
+  flyway:
+    enabled: false
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    validate-on-migrate: false
+    out-of-order: false
+
+  # ============================================================
+  # REDIS (CONTAINER)
+  # ============================================================
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
+      password: ${REDIS_PASSWORD}
+      database: 0
+      timeout: 60000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 2
+          max-wait: -1ms
+        shutdown-timeout: 100ms
+
+  # ============================================================
+  # RABBITMQ (CONTAINER)
+  # ============================================================
+  rabbitmq:
+    host: ${RABBITMQ_HOST:rabbitmq}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+    virtual-host: ${RABBITMQ_VHOST:/}
+    listener:
+      simple:
+        acknowledge-mode: auto
+        concurrency: 5
+        max-concurrency: 20
+        prefetch: 5
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 1000ms
+          multiplier: 2
+          max-interval: 10000ms
+    template:
+      retry:
+        enabled: true
+        initial-interval: 1000ms
+        max-attempts: 3
+        multiplier: 2
+
+  # ============================================================
+  # SERVLET/MULTIPART CONFIGURATION
+  # ============================================================
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 50MB
+      file-size-threshold: 2MB
+
+  # ============================================================
+  # JACKSON CONFIGURATION
+  # ============================================================
+  jackson:
+    time-zone: UTC
+    date-format: yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
+
+# ==============================================================
+# SERVER CONFIGURATION
+# ==============================================================
+server:
+  port: 8080
+  shutdown: graceful
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+  tomcat:
+    max-http-post-size: 52428800 # 50MB in bytes (matches Nginx client_max_body_size)
+
+# ==============================================================
+# APPLICATION CONFIG
+# ==============================================================
+app:
+  # ============================================================
+  # JWT CONFIGURATION
+  # ============================================================
+  jwt:
+    secret: ${JWT_SECRET}
+    access-token-expiration: 604800000 # 7 days
+    refresh-token-expiration: 604800000 # 7 days
+    issuer: beyos-clothing-backend
+
+  # Frontend Configuration (Production - used to build payment gateway return/cancel URLs)
+  frontend:
+    base-url: ${FRONTEND_BASE_URL:https://beyosclothing.com}
+    audience: beyos-clothing-app
+
+  # ============================================================
+  # COOKIE CONFIGURATION
+  # ============================================================
+  cookie:
+    domain: beyosclothing.com
+    secure: true
+    http-only: true
+    same-site: None
+
+  # ============================================================
+  # AWS S3 CONFIGURATION
+  # ============================================================
+  aws:
+    s3:
+      bucket-name: ${AWS_S3_BUCKET:beyose-media}
+      region: ${AWS_REGION:eu-north-1}
+      access-key: ${AWS_ACCESS_KEY:}
+      secret-key: ${AWS_SECRET_KEY:}
+      presigned-url-expiration: 3600 # 1 hour in seconds
+      max-file-size: 10485760 # 10MB in bytes
+      allowed-extensions: jpg,jpeg,png,gif,pdf,doc,docx
+      use-public-access: ${AWS_S3_PUBLIC_ACCESS:false}
+      custom-domain: ${AWS_S3_CUSTOM_DOMAIN:}
+      use-custom-domain: ${AWS_S3_USE_CUSTOM_DOMAIN:false}
+
+  # ============================================================
+  # ELASTICSEARCH CONFIGURATION
+  # ============================================================
+  elasticsearch:
+    host: ${ELASTICSEARCH_HOST}
+    port: ${ELASTICSEARCH_PORT:9200}
+    scheme: http
+    username: ${ELASTICSEARCH_USERNAME:}
+    password: ${ELASTICSEARCH_PASSWORD:}
+    socket-timeout: 30000
+    connect-timeout: 5000
+    indices:
+      products: beyos-products
+      orders: beyos-orders
+      users: beyos-users
+
+  # ============================================================
+  # CORS CONFIGURATION
+  # ============================================================
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:https://beyosclothing.com,https://*.beyosclothing.com}
+    allowed-methods: ${CORS_ALLOWED_METHODS:GET,POST,PUT,PATCH,DELETE,OPTIONS}
+    allowed-headers: ${CORS_ALLOWED_HEADERS:*}
+    exposed-headers: Authorization,Content-Type,X-Total-Count
+    allow-credentials: ${CORS_ALLOW_CREDENTIALS:true}
+    max-age: 3600
+
+  # ============================================================
+  # RABBITMQ CONFIGURATION
+  # ============================================================
+  rabbitmq:
+    exchange:
+      auth: auth.exchange
+      admin: admin.exchange
+      product: product.exchange
+      inventory: inventory.exchange
+      cart: cart.exchange
+      customer: beyos.exchange.customer
+      promotion: beyos.exchange.promotion
+      payment: beyos.exchange.payment
+      delivery: beyos.exchange.delivery
+      order: beyos.exchange.order
+      reseller: reseller.exchange
+      pos-analytics: beyos.exchange.pos.analytics
+      pos: beyos.exchange.pos
+      pos-inventory: beyos.exchange.pos.inventory
+      pos-dlx: beyos.exchange.pos.dlx
+
+    queue:
+      # Auth & Admin Queues
+      customer-created: customer.created.queue
+      email-verification: email.verification.queue
+      password-reset: password.reset.queue
+      admin-user-create: admin.user.create.queue
+      admin-user-role-update: admin.user.role.update.queue
+      admin-permissions-initialize: admin.permissions.initialize.queue
+      admin-role-create: admin.role.create.queue
+      admin-permissions-assign: admin.permissions.assign.queue
+      admin-user-delete: admin.user.delete.queue
+      auth-user-unlock: auth.user.unlock.queue
+      auth-user-lock: auth.user.lock.queue
+
+      # Product Queues
+      product-created: product.created.queue
+      product-updated: product.updated.queue
+      product-deleted: product.deleted.queue
+      product-price-changed: product.price.changed.queue
+      variant-created: variant.created.queue
+
+      # Inventory Queues
+      stock-updated: inventory.stock.updated.queue
+      stock-reserve-request: inventory.stock.reserve.request.queue
+      stock-decrease-request: inventory.stock.decrease.request.queue
+      low-stock-alert: inventory.low.stock.alert.queue
+
+      # Cart Queues
+      cart-item-added: cart.item.added.queue
+      cart-item-removed: cart.item.removed.queue
+      cart-promo-applied: cart.promo.applied.queue
+      cart-merged: cart.merged.queue
+      cart-expired: cart.expired.queue
+      cart-checkout-request: cart.checkout.request.queue
+      cart-items-clear-request: cart.items.clear.request.queue
+
+      # Lookup/Request Queues
+      customer-lookup-request: customer.lookup.request
+      customer-details-request: customer.details.request.queue
+      customer-address-lookup-request: customer.address.lookup.request.queue
+      product-lookup-request: product.lookup.request
+      product-details-lookup-request: product.details.lookup.request
+      stock-check-request: inventory.stock.check
+      promo-validation-request: promotion.validate.request
+      payment-method-lookup-request: payment.method.lookup.request
+      delivery-shipping-calculate-request: delivery.shipping.calculate.request.queue
+      delivery-courier-lookup-request: delivery.courier.lookup.request.queue
+
+      # Order Module Queues
+      order-create-request: order.create.request
+      shipment-create-request: shipment.create.request.queue
+      payment-request-create-request: payment.request.create.request.queue
+      order-status-changed: order.status.changed.queue
+
+      # Payment Module Queues
+      payment-captured: payment.captured.queue
+
+      # Reseller Queues
+      reseller-registered: reseller.registered.queue
+      reseller-approved: reseller.approved.queue
+      reseller-rejected: reseller.rejected.queue
+      reseller-suspended: reseller.suspended.queue
+      reseller-order-placed: reseller.order.placed.queue
+      reseller-wallet-credited: reseller.wallet.credited.queue
+      reseller-withdrawal-requested: reseller.withdrawal.requested.queue
+      reseller-withdrawal-processed: reseller.withdrawal.processed.queue
+      reseller-courier-lookup-request: reseller.courier.lookup.request.queue
+
+      # POS Queues
+      pos-product-created: pos.product.created.queue
+      pos-product-updated: pos.product.updated.queue
+      pos-product-deleted: pos.product.deleted.queue
+
+      # POS Lookup Queues (all missing in prod)
+      customer-by-userid-request: customer.by.userid.request
+      pos-product-list-request: pos.product.list.request
+      pos-variant-lookup-request: pos.variant.lookup.request
+      pos-customer-lookup-request: pos.customer.lookup.request
+      admin-details-lookup-request: admin.details.lookup.request
+      pos-cashier-lookup-request: pos.cashier.lookup.request
+      # Additional Reseller & Product Lookup Queues
+      admin-role-permission-lookup-request: admin.role.permission.lookup.request.queue
+      reseller-details-lookup-request: reseller.details.lookup.request
+      reseller-product-detail-lookup-request: reseller.product.detail.lookup.request
+      reseller-orders-list-lookup-request: reseller.orders.list.lookup.request
+      # Product Payment Methods Lookup Queues
+      product-payment-methods-lookup-request: product.payment.methods.lookup.request
+      product-payment-methods-names-lookup-request: product.payment.methods.names.lookup.request
+      product-payment-method-mapping-lookup-request: product.payment.method.mapping.lookup.request.queue
+      cart-payment-method-lookup-request: cart.payment.method.lookup.request.queue
+
+      shipment-pickup-requested: shipment.pickup.requested.order
+      shipment-pickup-requested-delivery: shipment.pickup.requested.delivery
+
+    routing-key:
+      user-created: auth.user.created
+      email-verification: auth.email.verification
+      password-reset: auth.password.reset
+      admin-user-create: admin.user.create
+      admin-user-role-update: admin.user.role.update
+      admin-permissions-initialize: admin.permissions.initialize
+      admin-role-create: admin.role.create
+      admin-permissions-assign: admin.permissions.assign
+      admin-user-delete: admin.user.delete
+
+      product-created: product.created
+      product-updated: product.updated
+      product-price-changed: product.price.changed
+
+      stock-updated: inventory.stock.updated
+      stock-reserve-request: inventory.stock.reserve.request
+      low-stock-alert: inventory.low.stock.alert
+
+      cart-item-added: cart.item.added
+      cart-item-removed: cart.item.removed
+      cart-promo-applied: cart.promo.applied
+      cart-merged: cart.merged
+      cart-expired: cart.expired
+      cart-checkout-request: cart.items.checkout.request
+      customer-address-lookup-request: customer.address.lookup.request
+      delivery-shipping-calculate-request: delivery.shipping.calculate.request
+      payment-method-lookup-request: payment.method.lookup.request
+
+      reseller-registered: reseller.registered
+      reseller-approved: reseller.approved
+      reseller-rejected: reseller.rejected
+      reseller-suspended: reseller.suspended
+      reseller-order-placed: reseller.order.placed
+      reseller-wallet-credited: reseller.wallet.credited
+      reseller-withdrawal-requested: reseller.withdrawal.requested
+      reseller-withdrawal-processed: reseller.withdrawal.processed
+      # Additional missing routing keys
+      stock-decrease-request: inventory.stock.decrease.request
+      shipment-create-request: delivery.shipment.create.request
+      payment-request-create-request: payment.request.create.request
+      shipping-calculate-request: delivery.shipping.calculate.request
+      customer-lookup-request: customer.lookup.request
+      customer-details-request: customer.details.request
+      product-lookup-request: product.lookup.request
+      product-details-lookup-request: product.details.lookup.request
+      pos-product-created: product.created
+      pos-product-updated: product.updated
+      pos-product-deleted: product.deleted
+      pos-inventory-deduct: pos.inventory.deduct
+      pos-inventory-confirm: pos.inventory.confirm
+
+  # ============================================================
+  # PAGINATION DEFAULTS
+  # ============================================================
+  pagination:
+    default-page-size: 20
+    max-page-size: 100
+
+  # ============================================================
+  # UPLOAD CONFIGURATION
+  # ============================================================
+  upload:
+    dir: uploads
+    base-url: ${APP_BASE_URL:https://api.beyosclothing.com}
+    max-file-size: 5MB
+    max-request-size: 20MB
+
+  # ============================================================
+  # CACHE CONFIGURATION
+  # ============================================================
+  cache:
+    default-ttl: 3600 # 1 hour in seconds
+    cache-names:
+      products: products-cache
+      categories: categories-cache
+      inventory: inventory-cache
+      user-details: user-details-cache
+
+  # ============================================================
+  # BUSINESS RULES
+  # ============================================================
+  business:
+    order:
+      cancellation-window-hours: 24
+      auto-cancel-pending-hours: 72
+    inventory:
+      low-stock-threshold: 10
+      reserve-timeout-minutes: 15
+    payment:
+      timeout-seconds: 300
+      retry-attempts: 3
+    delivery:
+      standard-days: 5
+      express-days: 2
+
+# ==============================================================
+# ACTUATOR CONFIGURATION
+# ==============================================================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,env
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized
+      probes:
+        enabled: true
+  health:
+    redis:
+      enabled: true
+    db:
+      enabled: true
+    rabbitmq:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+# ==============================================================
+# SPRINGDOC OPENAPI (SWAGGER) CONFIGURATION
+# ==============================================================
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    tags-sorter: alpha
+    operations-sorter: alpha
+    display-request-duration: true
+    doc-expansion: none
+    default-models-expand-depth: 1
+    default-model-expand-depth: 1
+    disable-swagger-default-url: true
+    use-root-path: false
+  show-actuator: false
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+
+# ==============================================================
+# LOGGING CONFIGURATION
+# ==============================================================
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  level:
+    root: INFO
+    org.psint.beyosclothing: INFO
+    org.springframework.web: WARN
+    org.springframework.security: WARN
+    org.hibernate: WARN
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
+    com.zaxxer.hikari: INFO
+    org.springframework.data.redis: WARN
+    org.springframework.amqp: WARN
+  file:
+    name: logs/beyos-clothing-prod.log
+    max-size: 50MB
+    max-history: 30
+
+# eSMS (Dialog Sri Lanka) Configuration
+esms:
+  username: ${ESMS_USERNAME:}
+  password: ${ESMS_PASSWORD:}
+  url-message-key: ${ESMS_URL_MESSAGE_KEY:}
+  url-base-url: ${ESMS_BASE_URL:https://e-sms.dialog.lk}
+  source-address: ${ESMS_SOURCE_ADDRESS:BEYOS}
+
+
+onepay:
+  app-id: ${ONEPAY_APP_ID:}
+  app-token: ${ONEPAY_APP_TOKEN:}
+  hash-salt: ${ONEPAY_HASH_SALT:}
+  base-url: ${ONEPAY_BASE_URL:https://api.onepay.lk}

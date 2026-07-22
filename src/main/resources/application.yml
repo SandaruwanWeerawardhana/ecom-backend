@@ -1,18 +1,465 @@
+# ========================================
+# BEYOS CLOTHING BACKEND - MAIN CONFIGURATION
+# Multi-Environment Setup
+# ========================================
+
 spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/employee
-    username: root
-    password: 1234
+  application:
+    name: beyos-clothing-backend
 
+  config:
+    import: optional:file:./.env[.properties]
+
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  # Web Error Configuration
+  web:
+    error:
+      include-stacktrace: never
+      include-exception: false
+      include-message: always
+      include-binding-errors: always
+
+  # JPA/Hibernate Configuration
   jpa:
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+        jdbc:
+          batch_size: 20
+          time_zone: UTC
+        order_inserts: true
+        order_updates: true
+        enable_lazy_load_no_trans: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
 
-serve:
-  port: 8080
+  # Flyway Database Migration
+  flyway:
+    enabled: false  # Disabled - managed manually in AuthDatabaseConfig
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    validate-on-migrate: false  # Disabled to allow repair
+    out-of-order: false
 
+  # Redis Configuration
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+      database: 0
+      timeout: 60000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 2
+          max-wait: -1ms
+        shutdown-timeout: 100ms
 
+  # RabbitMQ Configuration
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+    virtual-host: /
+    listener:
+      simple:
+        acknowledge-mode: auto
+        concurrency: 3
+        max-concurrency: 10
+        prefetch: 1
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 1000ms
+          multiplier: 2
+          max-interval: 10000ms
+    template:
+      retry:
+        enabled: true
+        initial-interval: 1000ms
+        max-attempts: 3
+        multiplier: 2
+    exchange:
+      auth: auth.exchange
+      admin: admin.exchange
+      product: product.exchange
+      inventory: inventory.exchange
+      pos-inventory: pos.inventory.exchange
+      pos: pos.exchange
+      pos-dlx: pos.dlx.exchange
+      pos-analytics: beyos.exchange.pos.analytics
+    queue:
+      customer-created: customer.created.queue
+      customer-updated: customer.updated.queue
+      customer-deleted: customer.deleted.queue
+      email-verification: email.verification.queue
+      password-reset: password.reset.queue
+      admin-user-create: admin.user.create.queue
+      admin-user-role-update: admin.user.role.update.queue
+      admin-permissions-initialize: admin.permissions.initialize.queue
+      admin-role-create: admin.role.create.queue
+      admin-permissions-assign: admin.permissions.assign.queue
+      admin-user-delete: admin.user.delete.queue
+      # Product Events
+      product-created: product.created.queue
+      product-updated: product.updated.queue
+      product-deleted: product.deleted.queue
+      product-price-changed: product.price.changed.queue
+      pos-product-created: pos.product.created.queue
+      pos-product-updated: pos.product.updated.queue
+      pos-product-deleted: pos.product.deleted.queue
 
+      # POS Module Queues (Production-Ready)
+      pos-product-sync: pos.product.sync.queue
+      pos-inventory-deduction: pos.inventory.deduction.queue
+      pos-order-events: pos.order.events.queue
 
+      # POS Dead Letter Queues
+      pos-product-sync-dlq: pos.product.sync.dlq
+      pos-inventory-deduction-dlq: pos.inventory.deduction.dlq
+      pos-order-events-dlq: pos.order.events.dlq
 
+      # POS Retry Queues (Exponential Backoff: 1s, 5s, 30s)
+      pos-product-sync-retry-1: pos.product.sync.retry.1s
+      pos-product-sync-retry-2: pos.product.sync.retry.5s
+      pos-product-sync-retry-3: pos.product.sync.retry.30s
+      pos-inventory-deduction-retry-1: pos.inventory.deduction.retry.1s
+      pos-inventory-deduction-retry-2: pos.inventory.deduction.retry.5s
+      pos-inventory-deduction-retry-3: pos.inventory.deduction.retry.30s
+      pos-order-events-retry-1: pos.order.events.retry.1s
+      pos-order-events-retry-2: pos.order.events.retry.5s
+      pos-order-events-retry-3: pos.order.events.retry.30s
 
+      # POS Inventory Deduction Queues
+      pos-inventory-confirmation: pos.inventory.confirmation.queue
+      # Inventory Events
+      stock-updated: stock.updated.queue
+      stock-status-update: inventory.stock.status.update.queue
+      stock-reserve-request: stock.reserve.request.queue
+      low-stock-alert: low.stock.alert.queue
+      stock-initialized: stock.initialized.queue
+      # Variant Events
+      variant-created: variant.created.queue
+      # Auth RPC Password Queues
+      verify-password: auth.verify.password.queue
+      update-password: auth.update.password.queue
+
+      shipment-pickup-requested: shipment.pickup.requested.order
+      shipment-pickup-requested-delivery: shipment.pickup.requested.delivery
+
+  routing-keys:
+    # Cart routing keys
+    cart-items-checkout-request: cart.items.checkout.request
+    cart-items-clear-request: cart.items.clear.request
+
+    # Customer routing keys
+    customer-lookup-request: customer.lookup.request
+    customer-address-lookup-request: customer.address.lookup.request
+    customer-details-request: customer.details.request
+    customer-search-request: customer.search.request
+
+    # Payment routing keys
+    payment-method-lookup-request: payment.method.lookup.request
+    payment-request-create-request: payment.request.create.request
+
+    # Delivery routing keys
+    shipping-calculate-request: delivery.shipping.calculate.request
+    shipment-create-request: delivery.shipment.create.request
+
+    # Inventory routing keys
+    stock-decrease-request: inventory.stock.decrease.request
+
+    # POS product routing keys
+    pos-product-created: product.created
+    pos-product-updated: product.updated
+    pos-product-deleted: product.deleted
+
+    # POS Inventory routing keys
+    pos-inventory-deduct: pos.inventory.deduct
+    pos-inventory-confirm: pos.inventory.confirm
+
+  # Servlet/Multipart Configuration
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+      file-size-threshold: 2MB
+
+  # Jackson Configuration
+  jackson:
+    time-zone: UTC
+    date-format: yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
+
+# Server Configuration
+server:
+  port: ${SERVER_PORT:8080}
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+
+# Application-Specific Configuration
+app:
+  # JWT Configuration
+  jwt:
+    secret: ${JWT_SECRET}
+    access-token-expiration: 900000 # 15 minutes in milliseconds
+    refresh-token-expiration: 604800000 # 7 days in milliseconds
+    issuer: beyos-clothing-backend
+    audience: beyos-clothing-app
+
+  # AWS S3 Configuration
+  aws:
+    s3:
+      bucket-name: ${AWS_S3_BUCKET}
+      region: ${AWS_REGION:eu-north-1}
+      access-key: ${AWS_ACCESS_KEY:}
+      secret-key: ${AWS_SECRET_KEY:}
+      presigned-url-expiration: 3600 # 1 hour in seconds
+      max-file-size: 10485760 # 10MB in bytes
+      allowed-extensions: jpg,jpeg,png,gif,pdf,doc,docx
+
+  # Elasticsearch Configuration
+  elasticsearch:
+    host: ${ELASTICSEARCH_HOST:localhost}
+    port: ${ELASTICSEARCH_PORT:9200}
+    scheme: http
+    username: ${ELASTICSEARCH_USERNAME:}
+    password: ${ELASTICSEARCH_PASSWORD:}
+    socket-timeout: 30000
+    connect-timeout: 5000
+    indices:
+      products: beyos-products
+      orders: beyos-orders
+      users: beyos-users
+
+  # CORS Configuration
+#  cors:
+#    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:4200,http://localhost:5173}
+#    allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
+#    allowed-headers: "*"
+#    exposed-headers: Authorization,Content-Type,X-Total-Count
+#    allow-credentials: true
+#    max-age: 3600
+
+  # RabbitMQ Configuration
+  rabbitmq:
+    exchange:
+      auth: beyos.exchange.auth
+      admin: beyos.exchange.admin
+      product: beyos.exchange.product
+      inventory: beyos.exchange.inventory
+      cart: beyos.exchange.cart
+      customer: beyos.exchange.customer
+      payment: beyos.exchange.payment
+      delivery: beyos.exchange.delivery
+      order: beyos.exchange.order
+      promotion: beyos.exchange.promotion
+      pos: beyos.exchange.pos
+      pos-inventory: beyos.exchange.pos.inventory
+      pos-dlx: beyos.exchange.pos.dlx
+    queue:
+      # Auth & Admin Queues
+      customer-created: customer.created.queue
+      email-verification: email.verification.queue
+      password-reset: password.reset.queue
+      admin-user-create: admin.user.create.queue
+      admin-user-role-update: admin.user.role.update.queue
+      admin-permissions-initialize: admin.permissions.initialize.queue
+      admin-role-create: admin.role.create.queue
+      admin-permissions-assign: admin.permissions.assign.queue
+      admin-user-delete: admin.user.delete.queue
+
+      # Product Queues
+      product-created: product.created.queue
+      product-updated: product.updated.queue
+      product-deleted: product.deleted.queue
+      product-price-changed: product.price.changed.queue
+      variant-created: variant.created.queue
+
+      # Inventory Queues
+      inventory-product-lookup-request: inventory.product.lookup.request
+      inventory-product-bulk-lookup-request: inventory.product.bulk.lookup.request
+      stock-updated: stock.updated.queue
+      stock-status-update: inventory.stock.status.update.queue
+      stock-reserve-request: stock.reserve.request.queue
+      stock-decrease-request: stock.decrease.request.queue
+      low-stock-alert: low.stock.alert.queue
+
+      # Cart Queues
+      cart-items-checkout-request: cart.items.checkout.request.queue
+      cart-items-clear-request: cart.items.clear.request.queue
+
+      # Customer Queues
+      customer-lookup-request: customer.lookup.request.queue
+      customer-address-lookup-request: customer.address.lookup.request.queue
+      customer-details-request: customer.details.request.queue
+
+      # Payment Queues
+      payment-method-lookup-request: payment.method.lookup.request.queue
+      payment-request-create-request: payment.request.create.request.queue
+      # Product↔Payment payment method lookups
+      product-payment-methods-lookup-request: product.payment.methods.lookup.request
+      product-payment-methods-names-lookup-request: product.payment.methods.names.lookup.request
+      # Product payment method mapping lookup (consumed by product module)
+      product-payment-method-mapping-lookup-request: product.payment.method.mapping.lookup.request.queue
+      # Cart payment method lookup (consumed by cart module)
+      cart-payment-method-lookup-request: cart.payment.method.lookup.request.queue
+      # Payment transaction delivery confirmation (from delivery module)
+      payment-transaction-delivery-confirmed: payment.transaction.delivery.confirmed
+      # Payment status update -> order module (from OnePay callback)
+      payment-status-updated-order: payment.status.updated.order
+
+      # Delivery Queues
+      shipping-calculate-request: shipping.calculate.request.queue
+      shipment-create-request: shipment.create.request.queue
+      
+      # Courier Tracking & Status Update Queues
+      order-status-updated-courier: order.status.updated.courier
+      order-delivery-completed: order.delivery.completed
+      reseller-order-delivered: reseller.order.delivered.cart.lookup
+      reseller-cart-items-lookup-request: reseller.cart.items.lookup.request
+
+      # POS Module Queues (Production-Ready)
+      pos-product-sync: pos.product.sync.queue
+      pos-inventory-deduction: pos.inventory.deduction.queue
+      pos-order-events: pos.order.events.queue
+
+      # POS Dead Letter Queues
+      pos-product-sync-dlq: pos.product.sync.dlq
+      pos-inventory-deduction-dlq: pos.inventory.deduction.dlq
+      pos-order-events-dlq: pos.order.events.dlq
+
+      # POS Retry Queues (Exponential Backoff: 1s, 5s, 30s)
+      pos-product-sync-retry-1: pos.product.sync.retry.1s
+      pos-product-sync-retry-2: pos.product.sync.retry.5s
+      pos-product-sync-retry-3: pos.product.sync.retry.30s
+      pos-inventory-deduction-retry-1: pos.inventory.deduction.retry.1s
+      pos-inventory-deduction-retry-2: pos.inventory.deduction.retry.5s
+      pos-inventory-deduction-retry-3: pos.inventory.deduction.retry.30s
+      pos-order-events-retry-1: pos.order.events.retry.1s
+      pos-order-events-retry-2: pos.order.events.retry.5s
+      pos-order-events-retry-3: pos.order.events.retry.30s
+
+      # POS Inventory Confirmation Queue
+      pos-inventory-confirmation: pos.inventory.confirmation.queue
+
+      # POS Cashier & Admin Lookup
+      admin-details-lookup-request: admin.details.lookup.request
+      pos-cashier-lookup-request: pos.cashier.lookup.request
+      admin-role-permission-lookup-request: admin.role.permission.lookup.request.queue
+      # Reseller Lookup
+      reseller-details-lookup-request: reseller.details.lookup.request
+
+      # ── RESELLER DASHBOARD & WALLET SUMMARY LOOKUP QUEUES (RPC) ───────────
+      reseller-dashboard-metrics-lookup-request: reseller.dashboard.metrics.lookup.request
+      reseller-wallet-summary-lookup-request: reseller.wallet.summary.lookup.request
+
+  # RabbitMQ Queue Names (Legacy - for backward compatibility)
+  queues:
+    order-events: order.events
+    inventory-events: inventory.events
+    payment-events: payment.events
+    notification-events: notification.events
+
+  # Pagination Defaults
+  pagination:
+    default-page-size: 20
+    max-page-size: 100
+
+  # Upload Configuration
+  upload:
+    dir: uploads
+    base-url: ${APP_BASE_URL:http://localhost:8080}
+    max-file-size: 5MB
+    max-request-size: 20MB
+
+  # Cache Configuration
+  cache:
+    default-ttl: 3600 # 1 hour in seconds
+    cache-names:
+      products: products-cache
+      categories: categories-cache
+      inventory: inventory-cache
+      user-details: user-details-cache
+
+  # Business Rules
+  business:
+    order:
+      cancellation-window-hours: 24
+      auto-cancel-pending-hours: 72
+    inventory:
+      low-stock-threshold: 10
+      reserve-timeout-minutes: 15
+    payment:
+      timeout-seconds: 300
+      retry-attempts: 3
+    delivery:
+      standard-days: 5
+      express-days: 2
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,env
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized
+      probes:
+        enabled: true
+  health:
+    redis:
+      enabled: true
+    db:
+      enabled: true
+    rabbitmq:
+      enabled: true
+
+# SpringDoc OpenAPI (Swagger) Configuration
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    tags-sorter: alpha
+    operations-sorter: alpha
+    display-request-duration: true
+    doc-expansion: none
+    default-models-expand-depth: 1
+    default-model-expand-depth: 1
+    disable-swagger-default-url: true
+    use-root-path: false
+  show-actuator: false
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+
+# Logging Configuration
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  level:
+    root: INFO
+    org.psint.beyosclothing: INFO
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.hibernate: INFO
+    org.hibernate.SQL: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
+    com.zaxxer.hikari: INFO
