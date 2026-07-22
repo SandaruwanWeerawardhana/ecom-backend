@@ -1,0 +1,3 @@
+ALTER TABLE product_categories
+DROP INDEX slug,
+  MODIFY COLUMN slug VARCHAR(255) NOT NULL;

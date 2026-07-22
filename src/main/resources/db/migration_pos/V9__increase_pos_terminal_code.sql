@@ -1,0 +1,3 @@
+ALTER TABLE pos_terminals
+    MODIFY COLUMN code VARCHAR(255) NULL;
+
