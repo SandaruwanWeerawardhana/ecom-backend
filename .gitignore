@@ -27,6 +27,7 @@ uploads/
 *.iml
 *.ipr
 *.md
+!README.md
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
