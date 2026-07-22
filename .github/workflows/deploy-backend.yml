@@ -1,0 +1,42 @@
+#deploy-backend.yml
+name: Deploy Backend (Beyos Clothing)
+
+on:
+  push:
+    branches:
+      - release/backend
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Build Docker image
+        run: docker build -t beyos-backend:latest .
+
+      - name: Save image
+        run: docker save beyos-backend:latest | gzip > beyos-backend.tar.gz
+
+      - name: Upload image
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: 89.117.61.182
+          username: root
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: beyos-backend.tar.gz
+          target: /opt/beyos/
+
+      - name: Deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 89.117.61.182
+          username: root
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd /opt/beyos
+            docker load < beyos-backend.tar.gz
+            docker compose stop backend || true
+            docker compose rm -f backend || true
+            docker compose up -d backend

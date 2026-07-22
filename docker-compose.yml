@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  # Spring Boot Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: beyos-backend
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
+      APP_UPLOAD_DIR: /app/uploads
+      APP_UPLOAD_BASE_URL: ${APP_UPLOAD_BASE_URL:-http://localhost:8080}
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - beyos-network
+
+  # RabbitMQ Service
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: beyos-rabbitmq
+    ports:
+      - "15672:5672"    # AMQP port (changed from 5672 to 15672)
+      - "25672:15672"   # Management UI port (changed from 15672 to 25672)
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - beyos-network
+
+  # Redis Service
+  redis:
+    image: redis:7.2-alpine
+    container_name: beyos-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - beyos-network
+
+volumes:
+  rabbitmq_data:
+    driver: local
+  redis_data:
+    driver: local
+  uploads_data:
+    driver: local
+
+networks:
+  beyos-network:
+    driver: bridge
